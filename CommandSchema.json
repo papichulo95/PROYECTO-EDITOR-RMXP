@@ -1,0 +1,14 @@
+{
+  "101": {
+    "name": "Mostrar Texto",
+    "category": "Mensajes",
+    "color": "#4287f5",
+    "parameters_schema": ["string"]
+  },
+  "401": {
+    "name": "Texto (Continuación)",
+    "category": "Mensajes",
+    "color": "#4287f5",
+    "parameters_schema": ["string"]
+  }
+}

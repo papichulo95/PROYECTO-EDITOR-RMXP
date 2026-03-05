@@ -5,12 +5,28 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Collections.Generic;
 using PokemonEssentialsEditorEvs.Models;
+using PokemonEssentialsEditorEvs.Tools;
 
 namespace PokemonEssentialsEditorEvs.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    
+    private  TranslatorCommands _translator;
+
+    private bool _isProjectLoaded;
+        public bool IsProjectLoaded 
+        { 
+            get => _isProjectLoaded; 
+            set { _isProjectLoaded = value; OnPropertyChanged(nameof(IsProjectLoaded)); } 
+        }
+
+        private string _projectPath = "";
+        public string ProjectPath 
+        { 
+            get => _projectPath; 
+            set { _projectPath = value; OnPropertyChanged(nameof(ProjectPath)); } 
+        }
+    public ObservableCollection<UICommand> CurrentPageCommands { get; set; } = new();
     public MapExportData? CurrentMap { get; set; }
 
 
@@ -47,25 +63,54 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
     public MainWindowViewModel()
-    {
-        LoadMapJson("Map002_export.json"); // Cambia esto por tu ruta real
+
+    {   var dict = new CommandsDictionary();
+        dict.LoadDictionary(@"C:\Users\DELL\Documents\GitHub\PROYECTO-EDITOR-EVENTOS-RMXP\PokemonEssentialsEditorEvs\CommandSchema.json");
+        _translator = new TranslatorCommands(dict);
+
+        IsProjectLoaded = false;
     }
+    
+    public void LoadProject(string folderPath)
+        {
+            ProjectPath = folderPath;
+            string exportFolder = Path.Combine(folderPath, "Data", "ExportMaps");
+
+            if (Directory.Exists(exportFolder))
+            {
+                // Buscamos la primera carpeta de mapa disponible (ej. Map002)
+                var mapFolders = Directory.GetDirectories(exportFolder);
+                if (mapFolders.Length > 0)
+                {
+                    string firstMapFolder = mapFolders[0];
+                    string mapName = new DirectoryInfo(firstMapFolder).Name; // "Map002"
+                    string eventsJsonPath = Path.Combine(firstMapFolder, $"{mapName}_Events_export.json");
+
+                    LoadMapJson(eventsJsonPath);
+                    IsProjectLoaded = true;
+                }
+            }
+        }
 
     private void LoadMapJson(string filePath)
     {
         if (File.Exists(filePath))
         {
             string jsonString = File.ReadAllText(filePath);
-            CurrentMap = JsonSerializer.Deserialize<MapExportData>(jsonString);
+            // Deserializamos usando el Wrapper
+            var wrapper = JsonSerializer.Deserialize<MapEventsWrapper>(jsonString);
+            
+            CurrentMap = wrapper?.Data;
             
             if (CurrentMap != null && CurrentMap.Events != null)
             {
-                // Cargar los eventos del mapa en la colección ObservableCollection
                 MapEvents.Clear();
                 foreach (var eventData in CurrentMap.Events.Values)
                 {
                     MapEvents.Add(eventData);
                 }
+                OnPropertyChanged(nameof(MapWidth));
+                OnPropertyChanged(nameof(MapHeight));
             }
         }
     }
@@ -84,9 +129,38 @@ public partial class MainWindowViewModel : ViewModelBase
                 // Dependiendo de la plantilla que usaste, esto notifica a la UI del cambio.
                 // Si OnPropertyChanged te da error, cámbialo por: SetProperty(ref _selectedEvent, value);
                 OnPropertyChanged(nameof(SelectedEvent)); 
+
+                UpdateCommandsList();
             }
         }
     }
+
+    private void UpdateCommandsList()
+    {
+        CurrentPageCommands.Clear();
+        if (_selectedEvent?.Pages != null && _selectedEvent.Pages.Count > 0)
+        {
+            var page = _selectedEvent.Pages[0];
+            if (page.List != null)
+            {
+                foreach (var cmd in page.List)
+                {
+                    var schema = _translator.GetSchema(cmd.Code);
+                    string text = _translator.TranslateCommandToUI(cmd.Code, cmd.Parameters);
+                    string color = schema?.Color ?? "#3E3E42"; // Gris si es desconocido
+
+                    CurrentPageCommands.Add(new UICommand 
+                    { 
+                        DisplayText = text, 
+                        Color = color, 
+                        Indent = cmd.Indent 
+                    });
+                }
+            }
+        }
+
+    }
+
 
     // Método para crear un nuevo evento
     public void CreateNewEvent()

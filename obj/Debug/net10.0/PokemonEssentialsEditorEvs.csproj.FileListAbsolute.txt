@@ -72,3 +72,4 @@ c:\Users\DELL\Documents\GitHub\PROYECTO-EDITOR-EVENTOS-RMXP\PokemonEssentialsEdi
 c:\Users\DELL\Documents\GitHub\PROYECTO-EDITOR-EVENTOS-RMXP\PokemonEssentialsEditorEvs\obj\Debug\net10.0\PokemonE.7C13A89E.Up2Date
 c:\Users\DELL\Documents\GitHub\PROYECTO-EDITOR-EVENTOS-RMXP\PokemonEssentialsEditorEvs\obj\Debug\net10.0\PokemonEssentialsEditorEvs.genruntimeconfig.cache
 c:\Users\DELL\Documents\GitHub\PROYECTO-EDITOR-EVENTOS-RMXP\PokemonEssentialsEditorEvs\obj\Debug\net10.0\ref\PokemonEssentialsEditorEvs.dll
+c:\Users\DELL\Documents\GitHub\PROYECTO-EDITOR-EVENTOS-RMXP\PokemonEssentialsEditorEvs\obj\Debug\net10.0\PokemonEssentialsEditorEvs.sourcelink.json

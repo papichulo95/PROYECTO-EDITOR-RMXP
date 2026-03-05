@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -39,7 +40,11 @@ namespace PokemonEssentialsEditorEvs.Models
 
             private int _trigger; [JsonPropertyName("trigger")]
             public int Trigger { get => _trigger; set { _trigger = value; OnPropertyChanged(); } }
-    }
+
+            private List<EventCommandData>? _list;
+            [JsonPropertyName("list")]
+            public List<EventCommandData>? List { get => _list; set { _list = value; OnPropertyChanged(); } }
+        }
 
         // NUEVA CLASE: Representa las condiciones de aparición
     public class EventConditionData : INotifyPropertyChanged
@@ -53,5 +58,17 @@ namespace PokemonEssentialsEditorEvs.Models
             private string? _selfSwitchCh; [JsonPropertyName("self_switch_ch")]
             public string? SelfSwitchCh { get => _selfSwitchCh; set { _selfSwitchCh = value; OnPropertyChanged(); } }
         
+    }
+
+    public class EventCommandData
+    {[JsonPropertyName("code")]
+        public int Code { get; set; }
+
+        [JsonPropertyName("indent")]
+        public int Indent { get; set; }
+
+
+        [JsonPropertyName("parameters")]
+        public JsonElement Parameters { get; set; } 
     }
 }

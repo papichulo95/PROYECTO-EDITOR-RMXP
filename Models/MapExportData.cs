@@ -3,11 +3,19 @@ using System.Text.Json.Serialization;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 namespace PokemonEssentialsEditorEvs.Models
-{
+{   
+    public class MapEventsWrapper
+    {
+        [JsonPropertyName("data")]
+        public MapExportData? Data { get; set; }[JsonPropertyName("checksum")]
+        public string? Checksum { get; set; }
+    }
     public class MapExportData
     {
         [JsonPropertyName("map_id")]
-        public int MapId { get; set; }[JsonPropertyName("width")]
+        public int MapId { get; set; }
+        
+        [JsonPropertyName("width")]
         public int Width { get; set; }
 
         [JsonPropertyName("height")]
@@ -21,10 +29,6 @@ namespace PokemonEssentialsEditorEvs.Models
 
         [JsonPropertyName("bgs")]
         public string? Bgs { get; set; }
-
-        // Matriz 3D: [Capa Z][Fila Y][Columna X]
-        [JsonPropertyName("tile_data")]
-        public int[][][]? TileData { get; set; }
 
         [JsonPropertyName("events")]
         public Dictionary<string, MapEventData>? Events { get; set; }
