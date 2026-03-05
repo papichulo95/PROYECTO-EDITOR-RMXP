@@ -1,0 +1,221 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:PokemonEssentialsEditorEvs.ViewModels"
+        xmlns:models="using:PokemonEssentialsEditorEvs.Models"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+        x:Class="PokemonEssentialsEditorEvs.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="PokemonEssentialsEditorEvs"
+        RequestedThemeVariant="Dark">
+
+    <!-- * Generar estilo de TexBox -->
+
+
+    <Window.Styles>
+        <!-- Cuando pasas el mouse por encima -->
+        <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="#4E4E52" />
+        </Style>
+        <!-- Cuando haces clic para escribir (Focus) -->
+        <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="#1E1E1E" />
+            <Setter Property="BorderBrush" Value="#00A8FF" /> <!-- Borde azul estilo Visual Studio -->
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+    </Window.Styles>
+
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+            to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+    <Grid ColumnDefinitions="200, *, 250" Background="#1E1E1E">
+        
+        <!-- PANEL IZQUIERDO: Lista de Eventos -->
+        <Border Grid.Column="0" Background="#252526" BorderBrush="#3E3E42" BorderThickness="0,0,1,0">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                    <Button Content="+ Nuevo" Command="{Binding CreateNewEvent}" Margin="0,0,10,0" Background="#007ACC" Foreground="White" FontWeight="Bold"/>
+                    <Button Content="💾 Guardar" Command="{Binding SaveMap}" Background="#3E3E42" Foreground="White" FontWeight="Bold"/>
+                </StackPanel>
+                <TextBlock Text="EVENTOS DEL MAPA" 
+                                DockPanel.Dock="Top"
+                                Foreground="#CCCCCC" 
+                                FontWeight="Bold"
+                                Padding="10" 
+                                Background="#2D2D30"/>
+
+                <ListBox ItemsSource="{Binding MapEvents}" 
+                        SelectedItem="{Binding SelectedEvent}"
+                        Background="Transparent" Foreground="White" >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" Padding="5,2"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <!-- PANEL CENTRAL: El Lienzo del Mapa -->
+        <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <Border Background="#111111" Padding="20">
+                <!-- Este ItemsControl dibuja los eventos sobre un Canvas -->
+                <ListBox ItemsSource="{Binding MapEvents}"
+                        SelectedItem="{Binding SelectedEvent}"
+                        Width="{Binding MapWidth}" 
+                        Height="{Binding MapHeight}"
+                        Background="Transparent"
+                        BorderThickness="0">
+                    <!-- Definimos que el contenedor será un Canvas gris oscuro -->
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas ClipToBounds="True">
+                                <Canvas.Background>
+                                    <DrawingBrush TileMode="Tile"
+                                                SourceRect="0,0,32,32" 
+                                                DestinationRect="0,0,32,32">
+                                        <DrawingBrush.Drawing>
+                                            <GeometryDrawing>
+                                                <GeometryDrawing.Pen>
+                                                    
+                                                    <Pen Brush="rgb(253, 32, 32)" Thickness="1"/>
+                                                </GeometryDrawing.Pen>
+                                                <GeometryDrawing.Geometry>
+                                                    <RectangleGeometry Rect="0,0,32,32"/>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Canvas.Background>
+                            </Canvas>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    
+                    <!-- Le decimos a Avalonia cómo posicionar cada elemento usando PixelX y PixelY -->
+                    <ListBox.Styles>
+                            <Style Selector="ListBoxItem" x:DataType="models:MapEventData">
+                            <Setter Property="Canvas.Left" Value="{Binding PixelX}"/>
+                            <Setter Property="Canvas.Top" Value="{Binding PixelY}"/>
+                            <!-- Quitamos los márgenes por defecto para que encaje perfecto en 32x32 -->
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="MinHeight" Value="0"/>
+                            <Setter Property="MinWidth" Value="0"/>
+                        </Style>
+                    </ListBox.Styles>
+                    
+                    <!-- Definimos cómo se ve cada evento (Un cuadro azul de 32x32) -->
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="32" Height="32" Background="#007ACC" BorderBrush="White" BorderThickness="1" ToolTip.Tip="{Binding Name}">
+                                <TextBlock Text="{Binding Id}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="10" FontWeight="Bold"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    
+                </ListBox>
+            </Border>
+        </ScrollViewer>
+
+        <!-- PANEL DERECHO: Propiedades (Placeholder por ahora) -->
+        <!-- PANEL DERECHO: Propiedades -->
+        <Border Grid.Column="2" Background="#252526" BorderBrush="#3E3E42" BorderThickness="1,0,0,0">
+            <ScrollViewer>
+                <StackPanel>
+                    <TextBlock Text="PROPIEDADES" Foreground="#CCCCCC" FontWeight="Bold" Padding="10" HorizontalAlignment="Center"/>
+                    
+                    <ContentControl Content="{Binding SelectedEvent}">
+                        <ContentControl.ContentTemplate>
+                            <DataTemplate x:DataType="models:MapEventData">
+                                <StackPanel Spacing="15" Margin="15">
+                                    <!-- Datos Básicos -->
+                                    <StackPanel Spacing="5">
+                                        <TextBlock Text="{Binding Id, StringFormat='ID del Evento: {0}'}" Foreground="#00A8FF" FontWeight="Bold"/>
+                                        <TextBlock Text="Nombre:" Foreground="#AAAAAA" FontSize="12"/>
+                                        <TextBox Text="{Binding Name}" Foreground="White" BorderThickness="0"/>
+                                        <Grid ColumnDefinitions="*,*">
+                                            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                                <TextBlock Text="Posición X:" Foreground="#AAAAAA" FontSize="12"/>
+                                                <TextBox Text="{Binding X}" Foreground="White" BorderThickness="0"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                                <TextBlock Text="Posición Y:" Foreground="#AAAAAA" FontSize="12"/>
+                                                <TextBox Text="{Binding Y}" Foreground="White" BorderThickness="0"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+
+                                    <!-- PÁGINA 1  -->
+                                    <ContentControl Content="{Binding Pages[0]}">
+                                        <ContentControl.ContentTemplate>
+                                            <DataTemplate x:DataType="models:EventPageData">
+                                                <StackPanel Spacing="15">
+                                                    
+                                                    <!-- Condiciones de Aparición  -->
+                                                    <Border BorderBrush="#3E3E42" BorderThickness="1" Padding="10">
+                                                        <StackPanel Spacing="5">
+                                                            <TextBlock Text="Condiciones de Aparición" Foreground="#00A8FF" FontSize="12" FontWeight="Bold" Margin="0,-12,0,5" Background="#252526" HorizontalAlignment="Left" Padding="2,0"/>
+                                                            <CheckBox Content="Interruptor Local" IsChecked="{Binding Condition.SelfSwitchValid}" Foreground="White"/>
+                                                            <ComboBox SelectedItem="{Binding Condition.SelfSwitchCh}" IsEnabled="{Binding Condition.SelfSwitchValid}" HorizontalAlignment="Stretch">
+                                                                <ComboBoxItem>A</ComboBoxItem>
+                                                                <ComboBoxItem>B</ComboBoxItem>
+                                                                <ComboBoxItem>C</ComboBoxItem>
+                                                                <ComboBoxItem>D</ComboBoxItem>
+                                                            </ComboBox>
+                                                        </StackPanel>
+                                                    </Border>
+
+                                                    <!-- Opciones -->
+                                                    <Border BorderBrush="#3E3E42" BorderThickness="1" Padding="10">
+                                                        <StackPanel Spacing="5">
+                                                            <TextBlock Text="Opciones" Foreground="#00A8FF" FontSize="12" FontWeight="Bold" Margin="0,-18,0,5" Background="#252526" HorizontalAlignment="Left" Padding="2,0"/>
+                                                            <Grid ColumnDefinitions="*,*">
+                                                                <StackPanel Grid.Column="0" Spacing="5">
+                                                                    <CheckBox Content="Anim. moverse" IsChecked="{Binding WalkAnime}" Foreground="White" FontSize="11"/>
+                                                                    <CheckBox Content="Dirección fija" IsChecked="{Binding DirectionFix}" Foreground="White" FontSize="11"/>
+                                                                    <CheckBox Content="Sobre el pers." IsChecked="{Binding AlwaysOnTop}" Foreground="White" FontSize="11"/>
+                                                                </StackPanel>
+                                                                <StackPanel Grid.Column="1" Spacing="5">
+                                                                    <CheckBox Content="Anim. parado" IsChecked="{Binding StepAnime}" Foreground="White" FontSize="11"/>
+                                                                    <CheckBox Content="Atravesable" IsChecked="{Binding Through}" Foreground="White" FontSize="11"/>
+                                                                </StackPanel>
+                                                            </Grid>
+                                                        </StackPanel>
+                                                    </Border>
+
+                                                    <!-- Detonante de Inicio -->
+                                                    <Border BorderBrush="#3E3E42" BorderThickness="1" Padding="10">
+                                                        <StackPanel Spacing="5">
+                                                            <TextBlock Text="Detonante de Inicio" Foreground="#00A8FF" FontSize="12" FontWeight="Bold" Margin="0,-18,0,5" Background="#252526" HorizontalAlignment="Left" Padding="2,0"/>
+                                                            <ComboBox SelectedIndex="{Binding Trigger}" HorizontalAlignment="Stretch">
+                                                                <ComboBoxItem>Pulsar Aceptar</ComboBoxItem>
+                                                                <ComboBoxItem>Toparse con héroe</ComboBoxItem>
+                                                                <ComboBoxItem>Colisionar</ComboBoxItem>
+                                                                <ComboBoxItem>Inicio automático</ComboBoxItem>
+                                                                <ComboBoxItem>Proceso paralelo</ComboBoxItem>
+                                                            </ComboBox>
+                                                        </StackPanel>
+                                                    </Border>
+
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ContentControl.ContentTemplate>
+                                    </ContentControl>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ContentControl.ContentTemplate>
+                    </ContentControl>
+                    
+                    <TextBlock Text="Selecciona un evento en la lista para editar sus propiedades." 
+                               Foreground="#666666" TextWrapping="Wrap" TextAlignment="Center" Margin="15,20,15,0"
+                               IsVisible="{Binding SelectedEvent, Converter={x:Static ObjectConverters.IsNull}}"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+    </Grid>
+</Window>
