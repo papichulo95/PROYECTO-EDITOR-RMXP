@@ -34,6 +34,46 @@ namespace PokemonEssentialsEditorEvs.Models
         public Dictionary<string, MapEventData>? Events { get; set; }
     }
 
+    // Cargar Tilesets data
+
+    public class SystemExportData
+    {
+        [JsonPropertyName("tilesets")]
+        public Dictionary<string, TilesetData>? Tilesets { get; set; }
+    }
+
+    public class TilesetData
+    {[JsonPropertyName("id")]
+        public int Id { get; set; }
+
+        [JsonPropertyName("name")]
+        public string? Name { get; set; }
+
+        [JsonPropertyName("tileset_name")]
+        public string? TilesetName { get; set; }
+    }
+
+
+    // CARGAR METRICS
+    public class MapMetricsData
+    {[JsonPropertyName("map_id")]
+        public int MapId { get; set; }
+
+        [JsonPropertyName("width")]
+        public int Width { get; set; }
+
+        [JsonPropertyName("height")]
+        public int Height { get; set; }
+
+        [JsonPropertyName("tileset_id")]
+        public int TilesetId { get; set; }
+
+        [JsonPropertyName("tile_data")]
+        public int[][][]? TileData { get; set; }
+    }
+
+
+
     public class MapEventData : INotifyPropertyChanged
     {   public event PropertyChangedEventHandler? PropertyChanged;
 

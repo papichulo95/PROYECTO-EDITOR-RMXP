@@ -3,6 +3,7 @@
         xmlns:vm="using:PokemonEssentialsEditorEvs.ViewModels"
         xmlns:models="using:PokemonEssentialsEditorEvs.Models"
         xmlns:tools="using:PokemonEssentialsEditorEvs.Tools"
+        xmlns:controls="using:PokemonEssentialsEditorEvs.Controls"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
@@ -40,7 +41,7 @@
             <!-- ========================================== -->
         <Grid Background="#1E1E1E" IsVisible="{Binding !IsProjectLoaded}">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
-                        <TextBlock Text="Pokémon Essentials Studio" FontSize="32" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Mondongo" FontSize="32" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                         <TextBlock Text="Selecciona la carpeta de tu juego para comenzar a editar." Foreground="#AAAAAA" HorizontalAlignment="Center"/>
                         
                         <!-- Este botón llama al evento en el Code-Behind -->
@@ -52,7 +53,7 @@
                                 HorizontalAlignment="Center" Cursor="Hand"/>
                     </StackPanel>
         </Grid>
-        <Grid ColumnDefinitions="200, *, 250" Background="#1E1E1E" IsVisible="{Binding IsProjectLoaded}">
+        <Grid ColumnDefinitions="200, *, 250" Background="#1E1E1E" IsVisible="{Binding IsMapEditorVisible}">
             
             <!-- PANEL IZQUIERDO: Lista de Eventos -->
             <Border Grid.Column="0" Background="#252526" BorderBrush="#3E3E42" BorderThickness="0,0,1,0">
@@ -73,7 +74,7 @@
                             Background="Transparent" Foreground="White" >
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Name}" Padding="5,2"/>
+                                <TextBlock Text="{Binding Name, FallbackValue='Sin Selección'}" Padding="5,2"/>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
@@ -83,60 +84,42 @@
             <!-- PANEL CENTRAL: El Lienzo del Mapa -->
             <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <Border Background="#111111" Padding="20">
-                    <!-- Este ItemsControl dibuja los eventos sobre un Canvas -->
-                    <ListBox ItemsSource="{Binding MapEvents}"
-                            SelectedItem="{Binding SelectedEvent}"
-                            Width="{Binding MapWidth}" 
-                            Height="{Binding MapHeight}"
-                            Background="Transparent"
-                            BorderThickness="0">
-                        <!-- Definimos que el contenedor será un Canvas gris oscuro -->
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas ClipToBounds="True">
-                                    <Canvas.Background>
-                                        <DrawingBrush TileMode="Tile"
-                                                    SourceRect="0,0,32,32" 
-                                                    DestinationRect="0,0,32,32">
-                                            <DrawingBrush.Drawing>
-                                                <GeometryDrawing>
-                                                    <GeometryDrawing.Pen>
-                                                        
-                                                        <Pen Brush="rgb(253, 32, 32)" Thickness="1"/>
-                                                    </GeometryDrawing.Pen>
-                                                    <GeometryDrawing.Geometry>
-                                                        <RectangleGeometry Rect="0,0,32,32"/>
-                                                    </GeometryDrawing.Geometry>
-                                                </GeometryDrawing>
-                                            </DrawingBrush.Drawing>
-                                        </DrawingBrush>
-                                    </Canvas.Background>
-                                </Canvas>
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
+                    <Grid>
+                        <!-- MapRenderer para dibujar el mapa de tiles -->
+                        <controls:MapRenderer MapMetrics="{Binding CurrentMapMetrics}" TilesetImage="{Binding TilesetImage}" />
                         
-                        <!-- Le decimos a Avalonia cómo posicionar cada elemento usando PixelX y PixelY -->
-                        <ListBox.Styles>
+                        <!-- ListBox para los eventos encima del mapa -->
+                        <ListBox ItemsSource="{Binding MapEvents}"
+                                SelectedItem="{Binding SelectedEvent}"
+                                Width="{Binding MapWidth}" 
+                                Height="{Binding MapHeight}"
+                                Background="Transparent"
+                                BorderThickness="0">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas ClipToBounds="True" Background="Transparent" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            
+                            <ListBox.Styles>
                                 <Style Selector="ListBoxItem" x:DataType="models:MapEventData">
-                                <Setter Property="Canvas.Left" Value="{Binding PixelX}"/>
-                                <Setter Property="Canvas.Top" Value="{Binding PixelY}"/>
-                                <!-- Quitamos los márgenes por defecto para que encaje perfecto en 32x32 -->
-                                <Setter Property="Padding" Value="0"/>
-                                <Setter Property="MinHeight" Value="0"/>
-                                <Setter Property="MinWidth" Value="0"/>
-                            </Style>
-                        </ListBox.Styles>
-                        
-                        <!-- Definimos cómo se ve cada evento (Un cuadro azul de 32x32) -->
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border Width="32" Height="32" Background="#007ACC" BorderBrush="White" BorderThickness="1" ToolTip.Tip="{Binding Name}">
-                                    <TextBlock Text="{Binding Id}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="10" FontWeight="Bold"/>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                        
-                    </ListBox>
+                                    <Setter Property="Canvas.Left" Value="{Binding PixelX}"/>
+                                    <Setter Property="Canvas.Top" Value="{Binding PixelY}"/>
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="MinHeight" Value="0"/>
+                                    <Setter Property="MinWidth" Value="0"/>
+                                </Style>
+                            </ListBox.Styles>
+                            
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Width="32" Height="32" Background="#007ACC" BorderBrush="White" BorderThickness="1" ToolTip.Tip="{Binding Name}">
+                                        <TextBlock Text="{Binding Id}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="10" FontWeight="Bold"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
                 </Border>
             </ScrollViewer>
 
@@ -228,23 +211,15 @@
                                 </DataTemplate>
                             </ContentControl.ContentTemplate>
                         </ContentControl>
-                        <Border BorderBrush="#3E3E42" BorderThickness="1" Padding="10" Height="250">
-                            <StackPanel>
-                                <TextBlock Text="Comandos del Evento" Foreground="#00A8FF" FontSize="12" FontWeight="Bold" Margin="5,-12,0,5" Background="#252526" HorizontalAlignment="Left" Padding="2,0"/>
-                                
-                                <ScrollViewer Height="220">
-                                    <ItemsControl ItemsSource="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).CurrentPageCommands}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="tools:UICommand">
-                                                <Border Background="{Binding Color}" Margin="{Binding Margin}" CornerRadius="3" Padding="5,2">
-                                                    <TextBlock Text="{Binding DisplayText}" Foreground="White" FontSize="12" TextWrapping="Wrap"/>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ScrollViewer>
-                            </StackPanel>
-                        </Border>
+
+                        <!-- TODO: Botón para abrir el editor de eventos -->
+
+                        <Button Content="📝 Editar Páginas y Comandos" 
+                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).OpenEventEditor}"
+                                        HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                                        Background="#3ea1e2" Foreground="White" FontWeight="Bold" Margin="0,15,0,0" Padding="10"/>
+
+
                         <TextBlock Text="Selecciona un evento en la lista para editar sus propiedades." 
                                 Foreground="#666666" TextWrapping="Wrap" TextAlignment="Center" Margin="15,20,15,0"
                                 IsVisible="{Binding SelectedEvent, Converter={x:Static ObjectConverters.IsNull}}"/>
@@ -252,6 +227,101 @@
                 </ScrollViewer>
             </Border>
 
+        </Grid>
+
+        <!-- TODO: Panel para mostrar el editor de eventos -->
+
+        <Grid Background="#1E1E1E" IsVisible="{Binding IsEditingEvent}" RowDefinitions="Auto, *">
+            
+            <!-- Cabecera -->
+            <Border Grid.Row="0" Background="#2D2D30" Padding="15" BorderBrush="#3E3E42" BorderThickness="0,0,0,1">
+                <StackPanel Orientation="Horizontal" Spacing="20">
+                    <Button Content="← Guardar y Volver" Command="{Binding CloseEventEditor}" Background="#3E3E42" Foreground="White" FontWeight="Bold"/>
+                    <TextBlock Text="{Binding SelectedEvent.Name, StringFormat='Editando Evento: {0}'}" VerticalAlignment="Center" FontSize="20" FontWeight="Bold" Foreground="#00A8FF"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Cuerpo: Pestañas (Tabs) -->
+            <TabControl Grid.Row="1" Margin="10" 
+                        ItemsSource="{Binding SelectedEvent.Pages}" 
+                        SelectedItem="{Binding SelectedPage}">
+                
+                <!-- Diseño de la cabecera de la pestaña (Ej: "Página 1") -->
+                <TabControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:EventPageData">
+                        <TextBlock Text="{Binding Title}" FontWeight="Bold" Padding="10,5"/>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+
+                <!-- Contenido de la pestaña seleccionada -->
+                <TabControl.ContentTemplate>
+                    <DataTemplate x:DataType="models:EventPageData">
+                        <Grid ColumnDefinitions="280, *" Margin="0,10,0,0">
+                            
+                            <!-- COLUMNA IZQUIERDA: Propiedades de la página -->
+                            <ScrollViewer Grid.Column="0" Padding="0,0,15,0">
+                                <StackPanel Spacing="15">
+                                    <!-- Condiciones -->
+                                    <Border BorderBrush="#3E3E42" BorderThickness="1" Padding="10">
+                                        <StackPanel Spacing="5">
+                                            <TextBlock Text="Condiciones de Aparición" Foreground="#00A8FF" FontSize="12" FontWeight="Bold" Margin="5,-12,0,5" Background="#1E1E1E" HorizontalAlignment="Left" Padding="2,0"/>
+                                            <CheckBox Content="Interruptor Local" IsChecked="{Binding Condition.SelfSwitchValid}" Foreground="White"/>
+                                            <ComboBox SelectedItem="{Binding Condition.SelfSwitchCh}" IsEnabled="{Binding Condition.SelfSwitchValid}" HorizontalAlignment="Stretch">
+                                                <ComboBoxItem>A</ComboBoxItem><ComboBoxItem>B</ComboBoxItem><ComboBoxItem>C</ComboBoxItem><ComboBoxItem>D</ComboBoxItem>
+                                            </ComboBox>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Opciones -->
+                                    <Border BorderBrush="#3E3E42" BorderThickness="1" Padding="10">
+                                        <StackPanel Spacing="5">
+                                            <TextBlock Text="Opciones" Foreground="#00A8FF" FontSize="12" FontWeight="Bold" Margin="5,-12,0,5" Background="#1E1E1E" HorizontalAlignment="Left" Padding="2,0"/>
+                                            <CheckBox Content="Anim. moverse" IsChecked="{Binding WalkAnime}" Foreground="White" FontSize="12"/>
+                                            <CheckBox Content="Anim. parado" IsChecked="{Binding StepAnime}" Foreground="White" FontSize="12"/>
+                                            <CheckBox Content="Dirección fija" IsChecked="{Binding DirectionFix}" Foreground="White" FontSize="12"/>
+                                            <CheckBox Content="Atravesable" IsChecked="{Binding Through}" Foreground="White" FontSize="12"/>
+                                            <CheckBox Content="Sobre el pers." IsChecked="{Binding AlwaysOnTop}" Foreground="White" FontSize="12"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Detonante -->
+                                    <Border BorderBrush="#3E3E42" BorderThickness="1" Padding="10">
+                                        <StackPanel Spacing="5">
+                                            <TextBlock Text="Detonante de Inicio" Foreground="#00A8FF" FontSize="12" FontWeight="Bold" Margin="5,-12,0,5" Background="#1E1E1E" HorizontalAlignment="Left" Padding="2,0"/>
+                                            <ComboBox SelectedIndex="{Binding Trigger}" HorizontalAlignment="Stretch">
+                                                <ComboBoxItem>Pulsar Aceptar</ComboBoxItem>
+                                                <ComboBoxItem>Toparse con héroe</ComboBoxItem>
+                                                <ComboBoxItem>Colisionar</ComboBoxItem>
+                                                <ComboBoxItem>Inicio automático</ComboBoxItem>
+                                                <ComboBoxItem>Proceso paralelo</ComboBoxItem>
+                                            </ComboBox>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </ScrollViewer>
+
+                            <!-- COLUMNA DERECHA: Comandos -->
+                            <Border Grid.Column="1" BorderBrush="#3E3E42" BorderThickness="1" Padding="10">
+                                <Grid RowDefinitions="Auto, *">
+                                    <TextBlock Grid.Row="0" Text="Comandos de Evento" Foreground="#00A8FF" FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
+                                    <ScrollViewer Grid.Row="1">
+                                        <ItemsControl ItemsSource="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).CurrentPageCommands}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="tools:UICommand">
+                                                    <Border Background="{Binding Color}" Margin="{Binding Margin}" CornerRadius="3" Padding="5,2">
+                                                        <TextBlock Text="{Binding DisplayText}" Foreground="White" FontSize="12" TextWrapping="Wrap"/>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Border>
+
+                        </Grid>
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+            </TabControl>
         </Grid>
     </Panel>
 </Window>

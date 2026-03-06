@@ -6,6 +6,7 @@ using System.Linq;
 using System.Collections.Generic;
 using PokemonEssentialsEditorEvs.Models;
 using PokemonEssentialsEditorEvs.Tools;
+using Avalonia.Media.Imaging;
 
 namespace PokemonEssentialsEditorEvs.ViewModels;
 
@@ -17,7 +18,11 @@ public partial class MainWindowViewModel : ViewModelBase
         public bool IsProjectLoaded 
         { 
             get => _isProjectLoaded; 
-            set { _isProjectLoaded = value; OnPropertyChanged(nameof(IsProjectLoaded)); } 
+
+
+            set { _isProjectLoaded = value; 
+            OnPropertyChanged(nameof(IsProjectLoaded)); 
+            OnPropertyChanged(nameof(IsMapEditorVisible));} 
         }
 
         private string _projectPath = "";
@@ -38,9 +43,9 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         get
         {
-            if (CurrentMap != null)
+            if (CurrentMapMetrics != null)
             {
-                return CurrentMap.Width * 32; // Convertir de tiles a píxeles (asumiendo que cada tile es de 32 píxeles)
+                return CurrentMapMetrics.Width * 32; // Convertir de tiles a píxeles (asumiendo que cada tile es de 32 píxeles)
             }
             else
             {
@@ -52,9 +57,9 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         get
         {
-            if (CurrentMap != null)
+            if (CurrentMapMetrics != null)
             {
-                return CurrentMap.Height * 32; // Convertir de tiles a píxeles (asumiendo que cada tile es de 32 píxeles)
+                return CurrentMapMetrics.Height * 32; // Convertir de tiles a píxeles (asumiendo que cada tile es de 32 píxeles)
             }
             else
             {
@@ -70,14 +75,35 @@ public partial class MainWindowViewModel : ViewModelBase
 
         IsProjectLoaded = false;
     }
-    
+        private MapMetricsData? _currentMapMetrics;
+        public MapMetricsData? CurrentMapMetrics 
+        { 
+            get => _currentMapMetrics; 
+            set { _currentMapMetrics = value; OnPropertyChanged(nameof(CurrentMapMetrics)); OnPropertyChanged(nameof(MapWidth)); OnPropertyChanged(nameof(MapHeight)); } 
+        }
+        private Bitmap? _tilesetImage;
+        public Bitmap? TilesetImage 
+        { 
+            get => _tilesetImage; 
+            set { _tilesetImage = value; OnPropertyChanged(nameof(TilesetImage)); } 
+        }
+        public SystemExportData? SystemData { get; set; }
     public void LoadProject(string folderPath)
         {
             ProjectPath = folderPath;
             string exportFolder = Path.Combine(folderPath, "Data", "ExportMaps");
 
             if (Directory.Exists(exportFolder))
-            {
+            {   
+                
+                // 1. Cargar System_export.json
+                string systemJsonPath = Path.Combine(exportFolder, "System_export.json");
+                if (File.Exists(systemJsonPath))
+                {
+                    string sysJson = File.ReadAllText(systemJsonPath);
+                    SystemData = JsonSerializer.Deserialize<SystemExportData>(sysJson);
+                }
+
                 // Buscamos la primera carpeta de mapa disponible (ej. Map002)
                 var mapFolders = Directory.GetDirectories(exportFolder);
                 if (mapFolders.Length > 0)
@@ -87,6 +113,9 @@ public partial class MainWindowViewModel : ViewModelBase
                     string eventsJsonPath = Path.Combine(firstMapFolder, $"{mapName}_Events_export.json");
 
                     LoadMapJson(eventsJsonPath);
+
+                    string metricsJsonPath = Path.Combine(firstMapFolder, $"{mapName}_mapmetrics_export.json");
+                    LoadMapMetricsJson(metricsJsonPath);
                     IsProjectLoaded = true;
                 }
             }
@@ -112,8 +141,46 @@ public partial class MainWindowViewModel : ViewModelBase
                 OnPropertyChanged(nameof(MapWidth));
                 OnPropertyChanged(nameof(MapHeight));
             }
+            //int p = 0;
+            //foreach (var page in  eventData.Pages) { page.Title = $"Página {p++}"; }
         }
     }
+
+    private void LoadMapMetricsJson(string filePath)
+    {
+        if (File.Exists(filePath))
+            {
+                string jsonString = File.ReadAllText(filePath);
+                CurrentMapMetrics = JsonSerializer.Deserialize<MapMetricsData>(jsonString);
+
+                OnPropertyChanged(nameof(MapWidth));
+                OnPropertyChanged(nameof(MapHeight));
+
+                // Si cargamos las métricas y tenemos el SystemData, intentamos cargar la imagen del tileset
+                if (CurrentMapMetrics != null && SystemData?.Tilesets != null)
+                {
+                    string tilesetIdStr = CurrentMapMetrics.TilesetId.ToString();
+                    if (SystemData.Tilesets.TryGetValue(tilesetIdStr, out var tilesetData))
+                    {
+                        string imageName = tilesetData.TilesetName ?? "";
+                        // Construimos la ruta a la imagen: Proyecto/Graphics/Tilesets/NombreImagen.png
+                        // Nota: RMXP a veces no guarda la extensión en el nombre, así que asumimos .png
+                        string imagePath = Path.Combine(ProjectPath, "Graphics", "Tilesets", imageName + ".png");
+                        
+                        if (File.Exists(imagePath))
+                        {
+                            TilesetImage = new Bitmap(imagePath);
+                            Debug.WriteLine($"Imagen del tileset cargada: {imagePath}");
+                        }
+                        else
+                        {
+                            Debug.WriteLine($"No se encontró la imagen del tileset: {imagePath}");
+                        }
+                    }
+                }
+            }
+    }
+
 
     private MapEventData? _selectedEvent;
 
@@ -130,20 +197,38 @@ public partial class MainWindowViewModel : ViewModelBase
                 // Si OnPropertyChanged te da error, cámbialo por: SetProperty(ref _selectedEvent, value);
                 OnPropertyChanged(nameof(SelectedEvent)); 
 
+                SelectedPage = _selectedEvent?.Pages?.FirstOrDefault();
+
                 UpdateCommandsList();
             }
         }
     }
 
+    private EventPageData? _selectedPage;
+        public EventPageData? SelectedPage
+        {
+            get => _selectedPage;
+            set
+            {
+                if (_selectedPage != value)
+                {
+                    _selectedPage = value;
+                    OnPropertyChanged(nameof(SelectedPage));
+                    UpdateCommandsList(); // Actualiza los comandos al cambiar de pestaña
+                }
+            }
+        }
     private void UpdateCommandsList()
     {
         CurrentPageCommands.Clear();
-        if (_selectedEvent?.Pages != null && _selectedEvent.Pages.Count > 0)
+        
+        if (SelectedPage?.List != null)
         {
-            var page = _selectedEvent.Pages[0];
-            if (page.List != null)
+            var page = SelectedPage.List;
+
+            if (page != null)
             {
-                foreach (var cmd in page.List)
+                foreach (var cmd in page)
                 {
                     var schema = _translator.GetSchema(cmd.Code);
                     string text = _translator.TranslateCommandToUI(cmd.Code, cmd.Parameters);

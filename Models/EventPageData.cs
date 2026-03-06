@@ -44,6 +44,9 @@ namespace PokemonEssentialsEditorEvs.Models
             private List<EventCommandData>? _list;
             [JsonPropertyName("list")]
             public List<EventCommandData>? List { get => _list; set { _list = value; OnPropertyChanged(); } }
+
+            [JsonIgnore]
+            public string Title { get; set; } = "Página";
         }
 
         // NUEVA CLASE: Representa las condiciones de aparición

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PokemonEssentialsEditorEvs")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+67ce136ba5c8d60e247b601afde49324ea619849")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1f16da1af0cd6fca7922d60b58ce53c2ab07a492")]
 [assembly: System.Reflection.AssemblyProductAttribute("PokemonEssentialsEditorEvs")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PokemonEssentialsEditorEvs")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
