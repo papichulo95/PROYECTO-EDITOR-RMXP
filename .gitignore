@@ -9,22 +9,6 @@
 *.exe
 
 # ==========================================
-# 2. CONFIGURACIONES LOCALES DE IDEs
-# ==========================================
-# Visual Studio Code
-.vscode/*
-
-!.vscode/tasks.json
-!.vscode/launch.json
-
-# Visual Studio (Por si alguna vez lo abres ahí)
-.vs/
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-
-# ==========================================
 # 3. ARCHIVOS DEL SISTEMA OPERATIVO
 # ==========================================
 # Windows
