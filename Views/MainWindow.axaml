@@ -40,17 +40,17 @@
             <!-- ========================================== -->
             <!-- DASHBOARD (Se oculta si el proyecto cargó) -->
             <!-- ========================================== -->
-        <views:ProjectView IsVisible="{Binding !IsProjectLoaded}" />
+        <views:ProjectView IsVisible="{Binding State.IsNoProject}" />
 
         
-        <Grid ColumnDefinitions="200, *, 250" Background="#1E1E1E" IsVisible="{Binding IsMapEditorVisible}">
+        <Grid ColumnDefinitions="200, *, 250" Background="#1E1E1E" IsVisible="{Binding State.IsMapEditorVisible}">
             
             <!-- PANEL IZQUIERDO: Lista de Eventos -->
             <Border Grid.Column="0" Background="#252526" BorderBrush="#3E3E42" BorderThickness="0,0,1,0">
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-                        <Button Content="+ Nuevo" Command="{Binding CreateNewEvent}" Margin="0,0,10,0" Background="#007ACC" Foreground="White" FontWeight="Bold"/>
-                        <Button Content="💾 Guardar" Command="{Binding SaveMap}" Background="#3E3E42" Foreground="White" FontWeight="Bold"/>
+                        <Button Content="+ Nuevo" Command="{Binding CreateNewEventCommand}" Margin="0,0,10,0" Background="#007ACC" Foreground="White" FontWeight="Bold"/>
+                        <Button Content="💾 Guardar" Command="{Binding SaveMapCommand}" Background="#3E3E42" Foreground="White" FontWeight="Bold"/>
                     </StackPanel>
                     <TextBlock Text="EVENTOS DEL MAPA" 
                                     DockPanel.Dock="Top"
@@ -205,7 +205,7 @@
                         <!-- TODO: Botón para abrir el editor de eventos -->
 
                         <Button Content="📝 Editar Páginas y Comandos" 
-                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).OpenEventEditor}"
+                                        Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).OpenEventEditorCommand}"
                                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
                                         Background="#3ea1e2" Foreground="White" FontWeight="Bold" Margin="0,15,0,0" Padding="10"/>
 
@@ -219,7 +219,7 @@
 
         </Grid>
 
-        <views:EventEditorView IsVisible="{Binding IsEditingEvent}" />
+        <views:EventEditorView IsVisible="{Binding State.IsEditingEvent}" />
 
 
     </Panel>

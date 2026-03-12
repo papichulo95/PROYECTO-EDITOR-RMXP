@@ -10,7 +10,7 @@
         <!-- Cabecera -->
         <Border Grid.Row="0" Background="#2D2D30" Padding="15" BorderBrush="#3E3E42" BorderThickness="0,0,0,1">
             <StackPanel Orientation="Horizontal" Spacing="20">
-                <Button Content="← Guardar y Volver" Command="{Binding CloseEventEditor}" Background="#3E3E42" Foreground="White" FontWeight="Bold"/>
+                <Button Content="← Guardar y Volver" Command="{Binding CloseEventEditorCommand}" Background="#3E3E42" Foreground="White" FontWeight="Bold"/>
                 <TextBlock Text="{Binding SelectedEvent.Name, StringFormat='Editando Evento: {0}'}" VerticalAlignment="Center" FontSize="20" FontWeight="Bold" Foreground="#00A8FF"/>
             </StackPanel>
         </Border>

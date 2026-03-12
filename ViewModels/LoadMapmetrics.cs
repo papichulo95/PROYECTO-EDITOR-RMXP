@@ -7,58 +7,82 @@ using System.Collections.Generic;
 using PokemonEssentialsEditorEvs.Models;
 using PokemonEssentialsEditorEvs.Tools;
 using Avalonia.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace PokemonEssentialsEditorEvs.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-      public MapExportData? CurrentMap { get; set; }
+// ── Propiedades de Estado y Rutas ───────────────────────────────────────
+
+    [ObservableProperty]
+    private string _projectPath = "";
 
 
+    // ── Datos del Mapa ──────────────────────────────────────────────────────
+    public SystemExportData? SystemData { get; set; }
+    public MapExportData? CurrentMap { get; set; }
+    
+    private MapMetricsData? _currentMapMetrics;
+    public MapMetricsData? CurrentMapMetrics 
+    { 
+        get => _currentMapMetrics; 
+        set 
+        { 
+            _currentMapMetrics = value; 
+            OnPropertyChanged(nameof(CurrentMapMetrics)); 
+            OnPropertyChanged(nameof(MapWidth)); 
+            OnPropertyChanged(nameof(MapHeight)); 
+        } 
+    }
+
+    private Bitmap? _tilesetImage;
+    public Bitmap? TilesetImage 
+    { 
+        get => _tilesetImage; 
+        set { _tilesetImage = value; OnPropertyChanged(nameof(TilesetImage)); } 
+    }
+
+    public int MapWidth => (CurrentMapMetrics?.Width ?? 0) * 32;
+    public int MapHeight => (CurrentMapMetrics?.Height ?? 0) * 32;
+
+    // ── Colecciones Visuales ────────────────────────────────────────────────
     public ObservableCollection<MapEventData> MapEvents { get; set; } = new();
+    public ObservableCollection<UICommand> CurrentPageCommands { get; set; } = new();
 
-
-    // Propiedades para acceder a la anchura y altura del mapa
-    public int MapWidth
+    // ── Selección ───────────────────────────────────────────────────────────
+    private MapEventData? _selectedEvent;
+    public MapEventData? SelectedEvent
     {
-        get
+        get => _selectedEvent;
+        set
         {
-            if (CurrentMapMetrics != null)
+            if (_selectedEvent != value)
             {
-                return CurrentMapMetrics.Width * 32; // Convertir de tiles a píxeles (asumiendo que cada tile es de 32 píxeles)
-            }
-            else
-            {
-                return 0; // Valor predeterminado si no hay mapa cargado
-            }
-        }
-    }
-    public int MapHeight
-    {
-        get
-        {
-            if (CurrentMapMetrics != null)
-            {
-                return CurrentMapMetrics.Height * 32; // Convertir de tiles a píxeles (asumiendo que cada tile es de 32 píxeles)
-            }
-            else
-            {
-                return 0; // Valor predeterminado si no hay mapa cargado
+                _selectedEvent = value;
+                OnPropertyChanged(nameof(SelectedEvent)); 
+                
+                // Al cambiar de evento, seleccionamos su primera página por defecto
+                SelectedPage = _selectedEvent?.Pages?.FirstOrDefault();
+                UpdateCommandsList();
             }
         }
     }
 
-        private MapMetricsData? _currentMapMetrics;
-        public MapMetricsData? CurrentMapMetrics 
-        { 
-            get => _currentMapMetrics; 
-            set { _currentMapMetrics = value; OnPropertyChanged(nameof(CurrentMapMetrics)); OnPropertyChanged(nameof(MapWidth)); OnPropertyChanged(nameof(MapHeight)); } 
+    private EventPageData? _selectedPage;
+    public EventPageData? SelectedPage
+    {
+        get => _selectedPage;
+        set
+        {
+            if (_selectedPage != value)
+            {
+                _selectedPage = value;
+                OnPropertyChanged(nameof(SelectedPage));
+                
+                // Al cambiar de página, actualizamos la lista de comandos visuales
+                UpdateCommandsList(); 
+            }
         }
-        private Bitmap? _tilesetImage;
-        public Bitmap? TilesetImage 
-        { 
-            get => _tilesetImage; 
-            set { _tilesetImage = value; OnPropertyChanged(nameof(TilesetImage)); } 
-        }
-        public SystemExportData? SystemData { get; set; }
+    }
 }
