@@ -1,0 +1,98 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:PokemonEssentialsEditorEvs.ViewModels"
+             xmlns:models="using:PokemonEssentialsEditorEvs.Models"
+             xmlns:tools="using:PokemonEssentialsEditorEvs.Tools"
+             x:Class="PokemonEssentialsEditorEvs.Views.EventEditorView"
+             x:DataType="vm:MainWindowViewModel">
+
+    <Grid Background="#1E1E1E" RowDefinitions="Auto, *">
+        <!-- Cabecera -->
+        <Border Grid.Row="0" Background="#2D2D30" Padding="15" BorderBrush="#3E3E42" BorderThickness="0,0,0,1">
+            <StackPanel Orientation="Horizontal" Spacing="20">
+                <Button Content="← Guardar y Volver" Command="{Binding CloseEventEditor}" Background="#3E3E42" Foreground="White" FontWeight="Bold"/>
+                <TextBlock Text="{Binding SelectedEvent.Name, StringFormat='Editando Evento: {0}'}" VerticalAlignment="Center" FontSize="20" FontWeight="Bold" Foreground="#00A8FF"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Cuerpo: Pestañas (Tabs) -->
+        <TabControl Grid.Row="1" Margin="10" 
+                    ItemsSource="{Binding SelectedEvent.Pages}" 
+                    SelectedItem="{Binding SelectedPage}">
+            
+            <TabControl.ItemTemplate>
+                <DataTemplate x:DataType="models:EventPageData">
+                    <TextBlock Text="{Binding Title}" FontWeight="Bold" Padding="10,5"/>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+
+            <TabControl.ContentTemplate>
+                <DataTemplate x:DataType="models:EventPageData">
+                    <Grid ColumnDefinitions="280, *" Margin="0,10,0,0">
+                        
+                        <!-- COLUMNA IZQUIERDA: Propiedades de la página -->
+                        <ScrollViewer Grid.Column="0" Padding="0,0,15,0">
+                            <StackPanel Spacing="15">
+                                <!-- Condiciones -->
+                                <Border BorderBrush="#3E3E42" BorderThickness="1" Padding="10">
+                                    <StackPanel Spacing="5">
+                                        <TextBlock Text="Condiciones de Aparición" Foreground="#00A8FF" FontSize="12" FontWeight="Bold" Margin="5,-12,0,5" Background="#1E1E1E" HorizontalAlignment="Left" Padding="2,0"/>
+                                        <CheckBox Content="Interruptor Local" IsChecked="{Binding Condition.SelfSwitchValid}" Foreground="White"/>
+                                        <ComboBox SelectedItem="{Binding Condition.SelfSwitchCh}" IsEnabled="{Binding Condition.SelfSwitchValid}" HorizontalAlignment="Stretch">
+                                            <ComboBoxItem>A</ComboBoxItem><ComboBoxItem>B</ComboBoxItem><ComboBoxItem>C</ComboBoxItem><ComboBoxItem>D</ComboBoxItem>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Opciones -->
+                                <Border BorderBrush="#3E3E42" BorderThickness="1" Padding="10">
+                                    <StackPanel Spacing="5">
+                                        <TextBlock Text="Opciones" Foreground="#00A8FF" FontSize="12" FontWeight="Bold" Margin="5,-12,0,5" Background="#1E1E1E" HorizontalAlignment="Left" Padding="2,0"/>
+                                        <CheckBox Content="Anim. moverse" IsChecked="{Binding WalkAnime}" Foreground="White" FontSize="12"/>
+                                        <CheckBox Content="Anim. parado" IsChecked="{Binding StepAnime}" Foreground="White" FontSize="12"/>
+                                        <CheckBox Content="Dirección fija" IsChecked="{Binding DirectionFix}" Foreground="White" FontSize="12"/>
+                                        <CheckBox Content="Atravesable" IsChecked="{Binding Through}" Foreground="White" FontSize="12"/>
+                                        <CheckBox Content="Sobre el pers." IsChecked="{Binding AlwaysOnTop}" Foreground="White" FontSize="12"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Detonante -->
+                                <Border BorderBrush="#3E3E42" BorderThickness="1" Padding="10">
+                                    <StackPanel Spacing="5">
+                                        <TextBlock Text="Detonante de Inicio" Foreground="#00A8FF" FontSize="12" FontWeight="Bold" Margin="5,-12,0,5" Background="#1E1E1E" HorizontalAlignment="Left" Padding="2,0"/>
+                                        <ComboBox SelectedIndex="{Binding Trigger}" HorizontalAlignment="Stretch">
+                                            <ComboBoxItem>Pulsar Aceptar</ComboBoxItem>
+                                            <ComboBoxItem>Toparse con héroe</ComboBoxItem>
+                                            <ComboBoxItem>Colisionar</ComboBoxItem>
+                                            <ComboBoxItem>Inicio automático</ComboBoxItem>
+                                            <ComboBoxItem>Proceso paralelo</ComboBoxItem>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- COLUMNA DERECHA: Comandos -->
+                        <Border Grid.Column="1" BorderBrush="#3E3E42" BorderThickness="1" Padding="10">
+                            <Grid RowDefinitions="Auto, *">
+                                <TextBlock Grid.Row="0" Text="Comandos de Evento" Foreground="#00A8FF" FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
+                                <ScrollViewer Grid.Row="1">
+                                    <ItemsControl ItemsSource="{Binding $parent[UserControl].((vm:MainWindowViewModel)DataContext).CurrentPageCommands}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="tools:UICommand">
+                                                <Border Background="{Binding Color}" Margin="{Binding Margin}" CornerRadius="3" Padding="5,2">
+                                                    <TextBlock Text="{Binding DisplayText}" Foreground="White" FontSize="12" TextWrapping="Wrap"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+
+                    </Grid>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+    </Grid>
+</UserControl>

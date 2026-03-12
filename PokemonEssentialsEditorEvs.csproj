@@ -24,4 +24,14 @@
     </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
   </ItemGroup>
+
+
+  <!--Add Schema Commands--> 
+  <ItemGroup>
+    <None Update="CommandSchema.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  
 </Project>

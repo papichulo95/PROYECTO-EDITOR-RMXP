@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text.Json;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
@@ -7,179 +8,126 @@ using System.Collections.Generic;
 using PokemonEssentialsEditorEvs.Models;
 using PokemonEssentialsEditorEvs.Tools;
 using Avalonia.Media.Imaging;
+using PokemonEssentialsEditorEvs.Services;
 
 namespace PokemonEssentialsEditorEvs.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private  TranslatorCommands _translator;
 
+
+    //
+    private readonly ICommandTranslatorService _commandTranslator;
+    private readonly IProjectLoaderService _projectLoader;
+     // --- ESTADO DE LA APLICACIÓN ---
     private bool _isProjectLoaded;
-        public bool IsProjectLoaded 
+    public bool IsProjectLoaded 
+    { 
+        get => _isProjectLoaded; 
+        set 
         { 
-            get => _isProjectLoaded; 
-
-
-            set { _isProjectLoaded = value; 
+            _isProjectLoaded = value; 
             OnPropertyChanged(nameof(IsProjectLoaded)); 
-            OnPropertyChanged(nameof(IsMapEditorVisible));} 
-        }
+            OnPropertyChanged(nameof(IsMapEditorVisible));
+        } 
+    }
 
-        private string _projectPath = "";
-        public string ProjectPath 
-        { 
-            get => _projectPath; 
-            set { _projectPath = value; OnPropertyChanged(nameof(ProjectPath)); } 
-        }
+
+
+
+    private string _projectPath = "";
+    public string ProjectPath 
+    { 
+        get => _projectPath; 
+        set { _projectPath = value; OnPropertyChanged(nameof(ProjectPath)); } 
+    }
+
+    
+
     public ObservableCollection<UICommand> CurrentPageCommands { get; set; } = new();
-    public MapExportData? CurrentMap { get; set; }
 
 
-    public ObservableCollection<MapEventData> MapEvents { get; set; } = new();
 
 
-    // Propiedades para acceder a la anchura y altura del mapa
-    public int MapWidth
-    {
-        get
-        {
-            if (CurrentMapMetrics != null)
-            {
-                return CurrentMapMetrics.Width * 32; // Convertir de tiles a píxeles (asumiendo que cada tile es de 32 píxeles)
-            }
-            else
-            {
-                return 0; // Valor predeterminado si no hay mapa cargado
-            }
-        }
-    }
-    public int MapHeight
-    {
-        get
-        {
-            if (CurrentMapMetrics != null)
-            {
-                return CurrentMapMetrics.Height * 32; // Convertir de tiles a píxeles (asumiendo que cada tile es de 32 píxeles)
-            }
-            else
-            {
-                return 0; // Valor predeterminado si no hay mapa cargado
-            }
-        }
-    }
     public MainWindowViewModel()
 
-    {   var dict = new CommandsDictionary();
-        dict.LoadDictionary(@"C:\Users\DELL\Documents\GitHub\PROYECTO-EDITOR-EVENTOS-RMXP\PokemonEssentialsEditorEvs\CommandSchema.json");
-        _translator = new TranslatorCommands(dict);
+    {   
+
+        _commandTranslator = new CommandTranslatorService();
+        _projectLoader = new ProjectLoaderService();
+        
+        string schemaPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CommandSchema.json");
+        _commandTranslator.LoadSchema(schemaPath); 
+            
+        
+        
+
 
         IsProjectLoaded = false;
     }
-        private MapMetricsData? _currentMapMetrics;
-        public MapMetricsData? CurrentMapMetrics 
-        { 
-            get => _currentMapMetrics; 
-            set { _currentMapMetrics = value; OnPropertyChanged(nameof(CurrentMapMetrics)); OnPropertyChanged(nameof(MapWidth)); OnPropertyChanged(nameof(MapHeight)); } 
-        }
-        private Bitmap? _tilesetImage;
-        public Bitmap? TilesetImage 
-        { 
-            get => _tilesetImage; 
-            set { _tilesetImage = value; OnPropertyChanged(nameof(TilesetImage)); } 
-        }
-        public SystemExportData? SystemData { get; set; }
+
+
     public void LoadProject(string folderPath)
-        {
-            ProjectPath = folderPath;
-            string exportFolder = Path.Combine(folderPath, "Data", "ExportMaps");
-
-            if (Directory.Exists(exportFolder))
-            {   
-                
-                // 1. Cargar System_export.json
-                string systemJsonPath = Path.Combine(exportFolder, "System_export.json");
-                if (File.Exists(systemJsonPath))
-                {
-                    string sysJson = File.ReadAllText(systemJsonPath);
-                    SystemData = JsonSerializer.Deserialize<SystemExportData>(sysJson);
-                }
-
-                // Buscamos la primera carpeta de mapa disponible (ej. Map002)
-                var mapFolders = Directory.GetDirectories(exportFolder);
-                if (mapFolders.Length > 0)
-                {
-                    string firstMapFolder = mapFolders[0];
-                    string mapName = new DirectoryInfo(firstMapFolder).Name; // "Map002"
-                    string eventsJsonPath = Path.Combine(firstMapFolder, $"{mapName}_Events_export.json");
-
-                    LoadMapJson(eventsJsonPath);
-
-                    string metricsJsonPath = Path.Combine(firstMapFolder, $"{mapName}_mapmetrics_export.json");
-                    LoadMapMetricsJson(metricsJsonPath);
-                    IsProjectLoaded = true;
-                }
-            }
-        }
-
-    private void LoadMapJson(string filePath)
     {
-        if (File.Exists(filePath))
-        {
-            string jsonString = File.ReadAllText(filePath);
-            // Deserializamos usando el Wrapper
-            var wrapper = JsonSerializer.Deserialize<MapEventsWrapper>(jsonString);
-            
-            CurrentMap = wrapper?.Data;
-            
-            if (CurrentMap != null && CurrentMap.Events != null)
+        ProjectPath = folderPath;
+        string exportFolder = Path.Combine(folderPath, "Data", "ExportMaps");
+
+        if (Directory.Exists(exportFolder))
+        {   
+            SystemData = _projectLoader.LoadSystemData(folderPath);
+
+            var mapFolders = Directory.GetDirectories(exportFolder);
+            if (mapFolders.Length > 0)
             {
-                MapEvents.Clear();
-                foreach (var eventData in CurrentMap.Events.Values)
+                string mapFolderName = new DirectoryInfo(mapFolders[0]).Name; // ej. "Map002"
+
+                // Cargar Eventos
+                CurrentMap = _projectLoader.LoadMapEvents(folderPath, mapFolderName);
+                if (CurrentMap?.Events != null)
                 {
-                    MapEvents.Add(eventData);
+                    MapEvents.Clear();
+                    foreach (var eventData in CurrentMap.Events.Values)
+                    {
+                        MapEvents.Add(eventData);
+                    }
                 }
-                OnPropertyChanged(nameof(MapWidth));
-                OnPropertyChanged(nameof(MapHeight));
-            }
-            //int p = 0;
-            //foreach (var page in  eventData.Pages) { page.Title = $"Página {p++}"; }
-        }
-    }
 
-    private void LoadMapMetricsJson(string filePath)
-    {
-        if (File.Exists(filePath))
-            {
-                string jsonString = File.ReadAllText(filePath);
-                CurrentMapMetrics = JsonSerializer.Deserialize<MapMetricsData>(jsonString);
+                // Cargar Métricas
+                CurrentMapMetrics = _projectLoader.LoadMapMetrics(folderPath, mapFolderName);
 
-                OnPropertyChanged(nameof(MapWidth));
-                OnPropertyChanged(nameof(MapHeight));
-
-                // Si cargamos las métricas y tenemos el SystemData, intentamos cargar la imagen del tileset
+                // Cargar Imagen del Tileset
                 if (CurrentMapMetrics != null && SystemData?.Tilesets != null)
                 {
                     string tilesetIdStr = CurrentMapMetrics.TilesetId.ToString();
                     if (SystemData.Tilesets.TryGetValue(tilesetIdStr, out var tilesetData))
                     {
-                        string imageName = tilesetData.TilesetName ?? "";
-                        // Construimos la ruta a la imagen: Proyecto/Graphics/Tilesets/NombreImagen.png
-                        // Nota: RMXP a veces no guarda la extensión en el nombre, así que asumimos .png
-                        string imagePath = Path.Combine(ProjectPath, "Graphics", "Tilesets", imageName + ".png");
-                        
-                        if (File.Exists(imagePath))
-                        {
-                            TilesetImage = new Bitmap(imagePath);
-                            Debug.WriteLine($"Imagen del tileset cargada: {imagePath}");
-                        }
-                        else
-                        {
-                            Debug.WriteLine($"No se encontró la imagen del tileset: {imagePath}");
-                        }
+                        TilesetImage = _projectLoader.LoadTilesetImage(folderPath, tilesetData.TilesetName ?? "");
                     }
                 }
+
+                IsProjectLoaded = true;
             }
+        }
     }
+    private void UpdateCommandsList()
+    {
+        CurrentPageCommands.Clear();
+        
+        var translated = _commandTranslator.TranslatePage(SelectedPage);
+            
+        foreach (var cmd in translated)
+        {
+            CurrentPageCommands.Add(cmd);
+        }
+
+    }
+        // * Propiedades de metrics de los mapas
+
+
+    
+    
+
+    
 
 
     private MapEventData? _selectedEvent;
@@ -218,33 +166,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 }
             }
         }
-    private void UpdateCommandsList()
-    {
-        CurrentPageCommands.Clear();
-        
-        if (SelectedPage?.List != null)
-        {
-            var page = SelectedPage.List;
 
-            if (page != null)
-            {
-                foreach (var cmd in page)
-                {
-                    var schema = _translator.GetSchema(cmd.Code);
-                    string text = _translator.TranslateCommandToUI(cmd.Code, cmd.Parameters);
-                    string color = schema?.Color ?? "#3E3E42"; // Gris si es desconocido
-
-                    CurrentPageCommands.Add(new UICommand 
-                    { 
-                        DisplayText = text, 
-                        Color = color, 
-                        Indent = cmd.Indent 
-                    });
-                }
-            }
-        }
-
-    }
 
 
     // Método para crear un nuevo evento
