@@ -1,0 +1,626 @@
+{
+  "101": {
+    "name": "Mostrar Texto",
+    "category": "Mensajes",
+    "color": "#2E86AB",
+    "parameters_schema": ["string"]
+  },
+  "401": {
+    "name": "Texto (Continuación)",
+    "category": "Mensajes",
+    "color": "#2E86AB",
+    "parameters_schema": ["string"]
+  },
+  "102": {
+    "name": "Mostrar Opciones",
+    "category": "Mensajes",
+    "color": "#2E86AB",
+    "parameters_schema": ["array", "int"]
+  },
+  "402": {
+    "name": "↳ Cuando [Opción]",
+    "category": "Mensajes",
+    "color": "#1B6CA8",
+    "parameters_schema": ["int"]
+  },
+  "403": {
+    "name": "↳ Cuando [Cancelar]",
+    "category": "Mensajes",
+    "color": "#1B6CA8",
+    "parameters_schema": []
+  },
+  "103": {
+    "name": "Ingresar Número",
+    "category": "Mensajes",
+    "color": "#2E86AB",
+    "parameters_schema": ["int", "int"]
+  },
+  "104": {
+    "name": "Cambiar Opciones de Texto",
+    "category": "Mensajes",
+    "color": "#2E86AB",
+    "parameters_schema": ["int", "int"]
+  },
+  "105": {
+    "name": "Capturar Botón",
+    "category": "Mensajes",
+    "color": "#2E86AB",
+    "parameters_schema": ["int"]
+  },
+  "106": {
+    "name": "Esperar",
+    "category": "Control de Flujo",
+    "color": "#6B4226",
+    "parameters_schema": ["int"]
+  },
+  "111": {
+    "name": "Rama Condicional",
+    "category": "Control de Flujo",
+    "color": "#C75146",
+    "parameters_schema": ["int"]
+  },
+  "411": {
+    "name": "↳ Si No",
+    "category": "Control de Flujo",
+    "color": "#A0393B",
+    "parameters_schema": []
+  },
+  "112": {
+    "name": "Bucle",
+    "category": "Control de Flujo",
+    "color": "#8B5E3C",
+    "parameters_schema": []
+  },
+  "413": {
+    "name": "↳ Repetir",
+    "category": "Control de Flujo",
+    "color": "#6B4226",
+    "parameters_schema": []
+  },
+  "113": {
+    "name": "Salir del Bucle",
+    "category": "Control de Flujo",
+    "color": "#8B5E3C",
+    "parameters_schema": []
+  },
+  "115": {
+    "name": "Salir del Evento",
+    "category": "Control de Flujo",
+    "color": "#C75146",
+    "parameters_schema": []
+  },
+  "116": {
+    "name": "Borrar Evento",
+    "category": "Control de Flujo",
+    "color": "#C75146",
+    "parameters_schema": []
+  },
+  "117": {
+    "name": "Llamar Evento Común",
+    "category": "Control de Flujo",
+    "color": "#8B5E3C",
+    "parameters_schema": ["int"]
+  },
+  "118": {
+    "name": "Etiqueta",
+    "category": "Control de Flujo",
+    "color": "#6B4226",
+    "parameters_schema": ["string"]
+  },
+  "119": {
+    "name": "Saltar a Etiqueta",
+    "category": "Control de Flujo",
+    "color": "#6B4226",
+    "parameters_schema": ["string"]
+  },
+  "121": {
+    "name": "Control de Interruptores",
+    "category": "Variables e Interruptores",
+    "color": "#4A7C59",
+    "parameters_schema": ["int", "int", "int"]
+  },
+  "122": {
+    "name": "Control de Variables",
+    "category": "Variables e Interruptores",
+    "color": "#4A7C59",
+    "parameters_schema": ["int", "int", "int", "int"]
+  },
+  "123": {
+    "name": "Control de Interruptor Local",
+    "category": "Variables e Interruptores",
+    "color": "#4A7C59",
+    "parameters_schema": ["string", "int"]
+  },
+  "124": {
+    "name": "Control de Temporizador",
+    "category": "Variables e Interruptores",
+    "color": "#4A7C59",
+    "parameters_schema": ["int", "int"]
+  },
+  "125": {
+    "name": "Cambiar Dinero",
+    "category": "Objeto y Dinero",
+    "color": "#B5862A",
+    "parameters_schema": ["int", "int", "int"]
+  },
+  "126": {
+    "name": "Cambiar Objetos",
+    "category": "Objeto y Dinero",
+    "color": "#B5862A",
+    "parameters_schema": ["int", "int", "int", "int"]
+  },
+  "127": {
+    "name": "Cambiar Armas",
+    "category": "Objeto y Dinero",
+    "color": "#B5862A",
+    "parameters_schema": ["int", "int", "int", "int"]
+  },
+  "128": {
+    "name": "Cambiar Armaduras",
+    "category": "Objeto y Dinero",
+    "color": "#B5862A",
+    "parameters_schema": ["int", "int", "int", "int"]
+  },
+  "129": {
+    "name": "Cambiar Miembro del Grupo",
+    "category": "Objeto y Dinero",
+    "color": "#B5862A",
+    "parameters_schema": ["int", "int"]
+  },
+  "131": {
+    "name": "Cambiar Skin de Ventana",
+    "category": "Sistema",
+    "color": "#5C5470",
+    "parameters_schema": ["string"]
+  },
+  "132": {
+    "name": "Cambiar BGM de Batalla",
+    "category": "Sistema",
+    "color": "#5C5470",
+    "parameters_schema": ["audio"]
+  },
+  "133": {
+    "name": "Cambiar ME de Fin de Batalla",
+    "category": "Sistema",
+    "color": "#5C5470",
+    "parameters_schema": ["audio"]
+  },
+  "134": {
+    "name": "Cambiar Acceso a Guardar",
+    "category": "Sistema",
+    "color": "#5C5470",
+    "parameters_schema": ["int"]
+  },
+  "135": {
+    "name": "Cambiar Acceso al Menú",
+    "category": "Sistema",
+    "color": "#5C5470",
+    "parameters_schema": ["int"]
+  },
+  "136": {
+    "name": "Cambiar Encuentros",
+    "category": "Sistema",
+    "color": "#5C5470",
+    "parameters_schema": ["int"]
+  },
+  "201": {
+    "name": "Transferir Jugador",
+    "category": "Movimiento",
+    "color": "#7B2D8B",
+    "parameters_schema": ["int", "int", "int", "int", "int", "int"]
+  },
+  "202": {
+    "name": "Mover Evento a Posición",
+    "category": "Movimiento",
+    "color": "#7B2D8B",
+    "parameters_schema": ["int", "int", "int", "int", "int"]
+  },
+  "203": {
+    "name": "Desplazar Mapa",
+    "category": "Movimiento",
+    "color": "#7B2D8B",
+    "parameters_schema": ["int", "int", "int"]
+  },
+  "204": {
+    "name": "Cambiar Ajustes del Mapa",
+    "category": "Movimiento",
+    "color": "#7B2D8B",
+    "parameters_schema": ["int"]
+  },
+  "205": {
+    "name": "Cambiar Tono de Niebla",
+    "category": "Movimiento",
+    "color": "#7B2D8B",
+    "parameters_schema": ["tone", "int"]
+  },
+  "206": {
+    "name": "Cambiar Opacidad de Niebla",
+    "category": "Movimiento",
+    "color": "#7B2D8B",
+    "parameters_schema": ["int", "int"]
+  },
+  "207": {
+    "name": "Mostrar Animación",
+    "category": "Movimiento",
+    "color": "#7B2D8B",
+    "parameters_schema": ["int", "int"]
+  },
+  "208": {
+    "name": "Cambiar Transparencia del Jugador",
+    "category": "Movimiento",
+    "color": "#7B2D8B",
+    "parameters_schema": ["int"]
+  },
+  "209": {
+    "name": "Establecer Ruta de Movimiento",
+    "category": "Movimiento",
+    "color": "#7B2D8B",
+    "parameters_schema": ["int", "move_route"]
+  },
+  "210": {
+    "name": "Esperar Fin de Movimiento",
+    "category": "Movimiento",
+    "color": "#7B2D8B",
+    "parameters_schema": []
+  },
+  "221": {
+    "name": "Preparar Transición",
+    "category": "Pantalla",
+    "color": "#1A535C",
+    "parameters_schema": []
+  },
+  "222": {
+    "name": "Ejecutar Transición",
+    "category": "Pantalla",
+    "color": "#1A535C",
+    "parameters_schema": ["string"]
+  },
+  "223": {
+    "name": "Cambiar Tono de Pantalla",
+    "category": "Pantalla",
+    "color": "#1A535C",
+    "parameters_schema": ["tone", "int"]
+  },
+  "224": {
+    "name": "Destello de Pantalla",
+    "category": "Pantalla",
+    "color": "#1A535C",
+    "parameters_schema": ["color", "int"]
+  },
+  "225": {
+    "name": "Sacudir Pantalla",
+    "category": "Pantalla",
+    "color": "#1A535C",
+    "parameters_schema": ["int", "int", "int"]
+  },
+  "231": {
+    "name": "Mostrar Imagen",
+    "category": "Pantalla",
+    "color": "#1A535C",
+    "parameters_schema": ["int", "string", "int", "int", "int", "int", "int", "int", "int", "int"]
+  },
+  "232": {
+    "name": "Mover Imagen",
+    "category": "Pantalla",
+    "color": "#1A535C",
+    "parameters_schema": ["int", "int", "int", "int", "int", "int", "int", "int", "int", "int"]
+  },
+  "233": {
+    "name": "Rotar Imagen",
+    "category": "Pantalla",
+    "color": "#1A535C",
+    "parameters_schema": ["int", "int"]
+  },
+  "234": {
+    "name": "Cambiar Tono de Imagen",
+    "category": "Pantalla",
+    "color": "#1A535C",
+    "parameters_schema": ["int", "tone", "int"]
+  },
+  "235": {
+    "name": "Borrar Imagen",
+    "category": "Pantalla",
+    "color": "#1A535C",
+    "parameters_schema": ["int"]
+  },
+  "236": {
+    "name": "Efectos de Clima",
+    "category": "Pantalla",
+    "color": "#1A535C",
+    "parameters_schema": ["int", "int", "int"]
+  },
+  "241": {
+    "name": "Reproducir BGM",
+    "category": "Audio",
+    "color": "#3D405B",
+    "parameters_schema": ["audio"]
+  },
+  "242": {
+    "name": "Desvanecer BGM",
+    "category": "Audio",
+    "color": "#3D405B",
+    "parameters_schema": ["int"]
+  },
+  "245": {
+    "name": "Reproducir BGS",
+    "category": "Audio",
+    "color": "#3D405B",
+    "parameters_schema": ["audio"]
+  },
+  "246": {
+    "name": "Desvanecer BGS",
+    "category": "Audio",
+    "color": "#3D405B",
+    "parameters_schema": ["int"]
+  },
+  "247": {
+    "name": "Memorizar BGM/BGS",
+    "category": "Audio",
+    "color": "#3D405B",
+    "parameters_schema": []
+  },
+  "248": {
+    "name": "Restaurar BGM/BGS",
+    "category": "Audio",
+    "color": "#3D405B",
+    "parameters_schema": []
+  },
+  "249": {
+    "name": "Reproducir ME",
+    "category": "Audio",
+    "color": "#3D405B",
+    "parameters_schema": ["audio"]
+  },
+  "250": {
+    "name": "Reproducir SE",
+    "category": "Audio",
+    "color": "#3D405B",
+    "parameters_schema": ["audio"]
+  },
+  "251": {
+    "name": "Detener SE",
+    "category": "Audio",
+    "color": "#3D405B",
+    "parameters_schema": []
+  },
+  "301": {
+    "name": "Procesar Batalla",
+    "category": "Batalla",
+    "color": "#8B0000",
+    "parameters_schema": ["int", "int"]
+  },
+  "601": {
+    "name": "↳ Si Gana",
+    "category": "Batalla",
+    "color": "#6B0000",
+    "parameters_schema": []
+  },
+  "602": {
+    "name": "↳ Si Escapa",
+    "category": "Batalla",
+    "color": "#6B0000",
+    "parameters_schema": []
+  },
+  "603": {
+    "name": "↳ Si Pierde",
+    "category": "Batalla",
+    "color": "#6B0000",
+    "parameters_schema": []
+  },
+  "302": {
+    "name": "Procesar Tienda",
+    "category": "Sistema",
+    "color": "#5C5470",
+    "parameters_schema": ["array"]
+  },
+  "303": {
+    "name": "Ingresar Nombre",
+    "category": "Sistema",
+    "color": "#5C5470",
+    "parameters_schema": ["int", "int"]
+  },
+  "311": {
+    "name": "Cambiar HP del Actor",
+    "category": "Actores",
+    "color": "#2D6A4F",
+    "parameters_schema": ["int", "int", "int", "int"]
+  },
+  "312": {
+    "name": "Cambiar SP del Actor",
+    "category": "Actores",
+    "color": "#2D6A4F",
+    "parameters_schema": ["int", "int", "int", "int"]
+  },
+  "313": {
+    "name": "Cambiar Estado del Actor",
+    "category": "Actores",
+    "color": "#2D6A4F",
+    "parameters_schema": ["int", "int", "int"]
+  },
+  "314": {
+    "name": "Recuperar Todo",
+    "category": "Actores",
+    "color": "#2D6A4F",
+    "parameters_schema": ["int"]
+  },
+  "315": {
+    "name": "Cambiar EXP del Actor",
+    "category": "Actores",
+    "color": "#2D6A4F",
+    "parameters_schema": ["int", "int", "int", "int"]
+  },
+  "316": {
+    "name": "Cambiar Nivel del Actor",
+    "category": "Actores",
+    "color": "#2D6A4F",
+    "parameters_schema": ["int", "int", "int", "int"]
+  },
+  "317": {
+    "name": "Cambiar Parámetros del Actor",
+    "category": "Actores",
+    "color": "#2D6A4F",
+    "parameters_schema": ["int", "int", "int", "int", "int"]
+  },
+  "318": {
+    "name": "Cambiar Habilidades del Actor",
+    "category": "Actores",
+    "color": "#2D6A4F",
+    "parameters_schema": ["int", "int", "int"]
+  },
+  "319": {
+    "name": "Cambiar Equipo del Actor",
+    "category": "Actores",
+    "color": "#2D6A4F",
+    "parameters_schema": ["int", "int", "int"]
+  },
+  "320": {
+    "name": "Cambiar Nombre del Actor",
+    "category": "Actores",
+    "color": "#2D6A4F",
+    "parameters_schema": ["int", "string"]
+  },
+  "321": {
+    "name": "Cambiar Clase del Actor",
+    "category": "Actores",
+    "color": "#2D6A4F",
+    "parameters_schema": ["int", "int"]
+  },
+  "322": {
+    "name": "Cambiar Gráfico del Actor",
+    "category": "Actores",
+    "color": "#2D6A4F",
+    "parameters_schema": ["int", "string", "int", "string", "int"]
+  },
+  "331": {
+    "name": "Cambiar HP del Enemigo",
+    "category": "Batalla",
+    "color": "#8B0000",
+    "parameters_schema": ["int", "int", "int", "int"]
+  },
+  "332": {
+    "name": "Cambiar SP del Enemigo",
+    "category": "Batalla",
+    "color": "#8B0000",
+    "parameters_schema": ["int", "int", "int", "int"]
+  },
+  "333": {
+    "name": "Cambiar Estado del Enemigo",
+    "category": "Batalla",
+    "color": "#8B0000",
+    "parameters_schema": ["int", "int", "int"]
+  },
+  "334": {
+    "name": "Recuperar Todo (Enemigo)",
+    "category": "Batalla",
+    "color": "#8B0000",
+    "parameters_schema": ["int"]
+  },
+  "335": {
+    "name": "Aparición de Enemigo",
+    "category": "Batalla",
+    "color": "#8B0000",
+    "parameters_schema": ["int"]
+  },
+  "336": {
+    "name": "Transformar Enemigo",
+    "category": "Batalla",
+    "color": "#8B0000",
+    "parameters_schema": ["int", "int"]
+  },
+  "337": {
+    "name": "Mostrar Animación de Batalla",
+    "category": "Batalla",
+    "color": "#8B0000",
+    "parameters_schema": ["int", "int"]
+  },
+  "338": {
+    "name": "Infligir Daño",
+    "category": "Batalla",
+    "color": "#8B0000",
+    "parameters_schema": ["int", "int"]
+  },
+  "339": {
+    "name": "Forzar Acción",
+    "category": "Batalla",
+    "color": "#8B0000",
+    "parameters_schema": ["int", "int", "int", "int"]
+  },
+  "340": {
+    "name": "Abortar Batalla",
+    "category": "Batalla",
+    "color": "#8B0000",
+    "parameters_schema": []
+  },
+  "351": {
+    "name": "Llamar Pantalla de Menú",
+    "category": "Sistema",
+    "color": "#5C5470",
+    "parameters_schema": []
+  },
+  "352": {
+    "name": "Llamar Pantalla de Guardado",
+    "category": "Sistema",
+    "color": "#5C5470",
+    "parameters_schema": []
+  },
+  "353": {
+    "name": "Game Over",
+    "category": "Sistema",
+    "color": "#5C5470",
+    "parameters_schema": []
+  },
+  "354": {
+    "name": "Volver a Título",
+    "category": "Sistema",
+    "color": "#5C5470",
+    "parameters_schema": []
+  },
+  "355": {
+    "name": "Script",
+    "category": "Script",
+    "color": "#495057",
+    "parameters_schema": ["string"]
+  },
+  "655": {
+    "name": "Script (Continuación)",
+    "category": "Script",
+    "color": "#495057",
+    "parameters_schema": ["string"]
+  },
+  "0": {
+    "name": "",
+    "category": "Estructura",
+    "color": "#1E1E1E",
+    "parameters_schema": []
+  },
+  "108": {
+    "name": "Nota",
+    "category": "Notas",
+    "color": "#6A6A6A",
+    "parameters_schema": ["string"]
+  },
+  "408": {
+    "name": "Nota (Continuación)",
+    "category": "Notas",
+    "color": "#6A6A6A",
+    "parameters_schema": ["string"]
+  },
+  "404": {
+    "name": "Fin de Opciones",
+    "category": "Mensajes",
+    "color": "#1B6CA8",
+    "parameters_schema": []
+  },
+  "412": {
+    "name": "Fin de Rama Condicional",
+    "category": "Control de Flujo",
+    "color": "#A0393B",
+    "parameters_schema": []
+  },
+  "509": {
+    "name": "Paso de Ruta",
+    "category": "Movimiento",
+    "color": "#4A235A",
+    "parameters_schema": ["move_command"]
+  }
+}

@@ -3,7 +3,6 @@ using System.IO;
 using System.Text.Json;
 using System.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
 using PokemonEssentialsEditorEvs.Models;
 using PokemonEssentialsEditorEvs.Services;
 using PokemonEssentialsEditorEvs.State;
@@ -146,10 +145,8 @@ public partial class MainWindowViewModel : ViewModelBase
     // ── Actualización de la lista de comandos ───────────────────────────────
     private void UpdateCommandsList()
     {
-        Debug.WriteLine($"[VM] UpdateCommandsList — SelectedPage: {(SelectedPage == null ? "null" : $"{SelectedPage.List?.Count ?? 0} cmds")}");
         CurrentPageCommands.Clear();
         foreach (var cmd in _commandTranslator.TranslatePage(SelectedPage))
             CurrentPageCommands.Add(cmd);
-        Debug.WriteLine($"[VM] CurrentPageCommands.Count = {CurrentPageCommands.Count}");
     }
 }
