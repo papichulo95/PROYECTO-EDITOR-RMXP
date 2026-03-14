@@ -46,11 +46,11 @@ namespace PokemonEssentialsEditorEvs.Services
 
             if (page?.List == null)
             {
-                Debug.WriteLine("[Translator] TranslatePage: page o page.List es null");
+                //Debug.WriteLine("[Translator] TranslatePage: page o page.List es null");
                 return result;
             }
 
-            Debug.WriteLine($"[Translator] Traduciendo {page.List.Count} comandos");
+            //Debug.WriteLine($"[Translator] Traduciendo {page.List.Count} comandos");
 
             foreach (var cmd in page.List)
             {
@@ -67,7 +67,7 @@ namespace PokemonEssentialsEditorEvs.Services
                 });
             }
 
-            Debug.WriteLine($"[Translator] Resultado: {result.Count} UICommands generados");
+            //Debug.WriteLine($"[Translator] Resultado: {result.Count} UICommands generados");
             return result;
         }
     }

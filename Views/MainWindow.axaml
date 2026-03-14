@@ -105,9 +105,19 @@
                             
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Width="32" Height="32" Background="#007ACC" BorderBrush="White" BorderThickness="1" ToolTip.Tip="{Binding Name}">
-                                        <TextBlock Text="{Binding Id}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="10" FontWeight="Bold"/>
-                                    </Border>
+                                    <Panel ToolTip.Tip="{Binding Name}">
+                                        <!-- Si TIENE gráfico, mostramos la imagen recortada -->
+                                        <Image Source="{Binding DisplayGraphic}" 
+                                                
+                                               
+                                               IsVisible="{Binding DisplayGraphic, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                                        
+                                        <!-- Si NO TIENE gráfico, mostramos el cuadro azul con el ID -->
+                                        <Border Width="32" Height="32" Background="#88007ACC" BorderBrush="#00A8FF" BorderThickness="2" 
+                                                IsVisible="{Binding DisplayGraphic, Converter={x:Static ObjectConverters.IsNull}}">
+                                            <TextBlock Text="{Binding Id}" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="10" FontWeight="Bold"/>
+                                        </Border>
+                                    </Panel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>

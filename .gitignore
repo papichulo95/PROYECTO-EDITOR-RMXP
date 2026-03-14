@@ -1,29 +1,20 @@
-# ==========================================
-# 1. ARCHIVOS DE COMPILACIÓN DE .NET (¡CRÍTICO!)
-# ==========================================
-# Ignora las carpetas donde se guardan los .exe y .dll
+
 [Bb]in/
 [Oo]bj/
 *.pdb
 *.dll
 *.exe
 
-# ==========================================
-# 3. ARCHIVOS DEL SISTEMA OPERATIVO
-# ==========================================
+
 # Windows
 Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# Mac (Por si alguien más colabora en el futuro)
+
 .DS_Store
 
-# ==========================================
-# 4. ARCHIVOS ESPECÍFICOS DE NUESTRO PROYECTO
-# ==========================================
-# Ignorar los JSON exportados de prueba para no ensuciar GitHub
-# (Quita esto si prefieres que los JSON de prueba sí se suban a GitHub)
+
 *export.json
 Map*_events.json
 Map*_mapmetrics.json

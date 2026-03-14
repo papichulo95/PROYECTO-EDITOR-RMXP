@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using PokemonEssentialsEditorEvs.Models;
 using PokemonEssentialsEditorEvs.Services;
 using PokemonEssentialsEditorEvs.State;
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 
 namespace PokemonEssentialsEditorEvs.ViewModels;
@@ -125,8 +126,50 @@ public partial class MainWindowViewModel : ViewModelBase
         if (CurrentMap?.Events is not null)
         {
             MapEvents.Clear();
+
+            var characterCache = new Dictionary<string, Bitmap>();
+
             foreach (var ev in CurrentMap.Events.Values)
+            {
+                // 1. Verificamos si el evento tiene páginas y gráficos
+                if (ev.Pages != null && ev.Pages.Count > 0)
+                {
+                    var graphicData = ev.Pages[0].Graphic; // Leemos el gráfico de la página 1
+                    
+                    if (graphicData != null && !string.IsNullOrEmpty(graphicData.CharacterName))
+                    {
+                        string charName = graphicData.CharacterName;
+                        
+                        // 2. Cargamos la imagen (usando caché para ser súper eficientes)
+                        if (!characterCache.ContainsKey(charName))
+                        {
+                            var loadedBmp = _projectLoader.LoadCharacterImage(folderPath, charName);
+                            if (loadedBmp != null) characterCache[charName] = loadedBmp;
+                        }
+
+                        if (characterCache.TryGetValue(charName, out Bitmap? fullBitmap))
+                        {
+                            // 3. MATEMÁTICA DE RMXP: Recortar el frame correcto
+                            // Una hoja de personaje tiene 4 columnas (patrones) y 4 filas (direcciones)
+                            int frameWidth = fullBitmap.PixelSize.Width / 4;
+                            int frameHeight = fullBitmap.PixelSize.Height / 4;
+
+                            // RMXP Direcciones: 2=Abajo(Fila 0), 4=Izq(Fila 1), 6=Der(Fila 2), 8=Arriba(Fila 3)
+                            int row = graphicData.DirectionEvent switch {
+                                2 => 0, 4 => 1, 6 => 2, 8 => 3, _ => 0
+                            };
+                            
+                            int col = graphicData.PatternEvent; // Usualmente 0, 1, 2 o 3
+
+                            // 4. Creamos el recorte y se lo asignamos al evento
+                            var sourceRect = new Avalonia.PixelRect(col * frameWidth, row * frameHeight, frameWidth, frameHeight);
+                            ev.DisplayGraphic = new CroppedBitmap(fullBitmap, sourceRect);
+                        }
+                    }
+                }
+                
                 MapEvents.Add(ev);
+            }
         }
 
         CurrentMapMetrics = _projectLoader.LoadMapMetrics(folderPath, mapFolderName);

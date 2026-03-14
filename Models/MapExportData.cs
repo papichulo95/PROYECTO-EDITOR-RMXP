@@ -148,17 +148,16 @@ namespace PokemonEssentialsEditorEvs.Models
             get => _pages;
             set { if (_pages != value) { _pages = value; OnPropertyChanged(); } }
         }
+
+        // Usamos CroppedBitmap porque solo queremos 1 frame del personaje, no la hoja entera
+        [JsonIgnore]
+        public Avalonia.Media.Imaging.CroppedBitmap? DisplayGraphic { get; set; }
     }
 
     
     
 
-
-
-
-
-
-
+    
 
 
 }

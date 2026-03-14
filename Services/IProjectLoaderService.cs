@@ -21,5 +21,7 @@ namespace PokemonEssentialsEditorEvs.Services
 
 
         List<Bitmap?> LoadAutotiles(string projectPath, List<string>? autotileNames);
+
+        Bitmap? LoadCharacterImage(string projectPath, string characterName);
     }
 }

@@ -96,7 +96,7 @@ namespace PokemonEssentialsEditorEvs.Services
                             stream.CopyTo(memoryStream);
                             memoryStream.Position = 0;
                             loadedAutotiles.Add(new Bitmap(memoryStream));
-                            Debug.WriteLine($"Cargados autotiles: {imagePath}");
+                            //Debug.WriteLine($"Cargados autotiles: {imagePath}");
                         }
                     }
                 }
@@ -108,6 +108,30 @@ namespace PokemonEssentialsEditorEvs.Services
             }
 
             return loadedAutotiles;
+        }
+
+        public Bitmap? LoadCharacterImage(string projectPath, string characterName)
+        {
+            if (string.IsNullOrEmpty(characterName)) return null;
+
+            // usar png  como estándar
+            string imagePath = Path.Combine(projectPath, "Graphics", "Characters", characterName + ".png");
+            
+            if (File.Exists(imagePath))
+            {
+                using (var stream = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        stream.CopyTo(memoryStream);
+                        memoryStream.Position = 0;
+                        Debug.WriteLine($"Cargando gráfico de: {imagePath}");
+                        return new Bitmap(memoryStream);
+                    }
+                }
+            }
+            
+            return null;
         }
     }
 }
