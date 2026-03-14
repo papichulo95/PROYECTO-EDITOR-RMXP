@@ -178,9 +178,12 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             string idStr = CurrentMapMetrics.TilesetId.ToString();
             if (SystemData.Tilesets.TryGetValue(idStr, out var tilesetData))
+            {
                 TilesetImage = _projectLoader.LoadTilesetImage(
                     folderPath, tilesetData.TilesetName ?? "");
                 Autotiles = _projectLoader.LoadAutotiles(folderPath, tilesetData?.AutotileNames ?? new List<string> ());
+            }
+                
         }
 
         State.ProjectLoaded();
