@@ -63,6 +63,7 @@ namespace PokemonEssentialsEditorEvs.Controls
 
                 int baseId = (i + 1) * 48;
                 _autotileCache[baseId] = AutotileProcessor.Expand(bmp);
+                bmp.Dispose();
             }
         }
 
