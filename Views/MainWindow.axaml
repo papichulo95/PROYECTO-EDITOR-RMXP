@@ -76,7 +76,9 @@
                 <Border Background="#111111" Padding="20">
                     <Grid>
                         <!-- MapRenderer para dibujar el mapa de tiles -->
-                        <controls:MapRenderer MapMetrics="{Binding CurrentMapMetrics}" TilesetImage="{Binding TilesetImage}" />
+                        <controls:MapRenderer MapMetrics="{Binding CurrentMapMetrics}" 
+                        TilesetImage="{Binding TilesetImage}"
+                        Autotiles="{Binding Autotiles}"/>
                         
                         <!-- ListBox para los eventos encima del mapa -->
                         <ListBox ItemsSource="{Binding MapEvents}"

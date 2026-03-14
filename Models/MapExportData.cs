@@ -51,7 +51,16 @@ namespace PokemonEssentialsEditorEvs.Models
 
         [JsonPropertyName("tileset_name")]
         public string? TilesetName { get; set; }
-    }
+
+        [JsonPropertyName("autotile_name")]
+
+
+        // CARGAR AUTOTILES
+        public List<string>? AutotileNames { get; set; }
+    };
+
+    
+
 
 
     // CARGAR METRICS

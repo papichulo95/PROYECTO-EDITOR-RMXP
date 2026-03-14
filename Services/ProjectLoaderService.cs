@@ -3,6 +3,7 @@ using System.Text.Json;
 using Avalonia.Media.Imaging;
 using PokemonEssentialsEditorEvs.Models;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace PokemonEssentialsEditorEvs.Services
 {
@@ -65,6 +66,48 @@ namespace PokemonEssentialsEditorEvs.Services
             
             Debug.WriteLine($"No se encontró la imagen del tileset: {imagePath}");
             return null;
+        }
+
+
+        // NUEVO MÉTODO
+        public List<Bitmap?> LoadAutotiles(string projectPath, List<string>? autotileNames)
+        {
+            var loadedAutotiles = new List<Bitmap?>();
+
+            if (autotileNames == null) return loadedAutotiles;
+
+            foreach (var name in autotileNames)
+            {
+                if (string.IsNullOrEmpty(name))
+                {
+                    loadedAutotiles.Add(null); // Espacio vacío si no hay autotile en esa ranura
+                    continue;
+                }
+
+                string imagePath = Path.Combine(projectPath, "Graphics", "Autotiles", name + ".png");
+
+                if (File.Exists(imagePath))
+                {
+                    // Carga limpia en memoria
+                    using (var stream = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            stream.CopyTo(memoryStream);
+                            memoryStream.Position = 0;
+                            loadedAutotiles.Add(new Bitmap(memoryStream));
+                            Debug.WriteLine($"Cargados autotiles: {imagePath}");
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"No se encontró el autotile: {imagePath}");
+                    loadedAutotiles.Add(null);
+                }
+            }
+
+            return loadedAutotiles;
         }
     }
 }

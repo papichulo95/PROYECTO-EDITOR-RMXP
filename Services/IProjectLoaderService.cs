@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Avalonia.Media.Imaging;
 using PokemonEssentialsEditorEvs.Models;
 
@@ -17,5 +18,8 @@ namespace PokemonEssentialsEditorEvs.Services
         
         // Carga la imagen del tileset de forma segura (sin bloquear el archivo)
         Bitmap? LoadTilesetImage(string projectPath, string imageName);
+
+
+        List<Bitmap?> LoadAutotiles(string projectPath, List<string>? autotileNames);
     }
 }

@@ -69,6 +69,14 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    private List<Bitmap?> _autotiles = new();
+    public List<Bitmap?> Autotiles 
+    { 
+        get => _autotiles; 
+        set { _autotiles = value; OnPropertyChanged(nameof(Autotiles)); } 
+    }
+
+
     private EventPageData? _selectedPage;
     public EventPageData? SelectedPage
     {

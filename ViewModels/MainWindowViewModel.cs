@@ -137,6 +137,7 @@ public partial class MainWindowViewModel : ViewModelBase
             if (SystemData.Tilesets.TryGetValue(idStr, out var tilesetData))
                 TilesetImage = _projectLoader.LoadTilesetImage(
                     folderPath, tilesetData.TilesetName ?? "");
+                Autotiles = _projectLoader.LoadAutotiles(folderPath, tilesetData?.AutotileNames ?? new List<string> ());
         }
 
         State.ProjectLoaded();
